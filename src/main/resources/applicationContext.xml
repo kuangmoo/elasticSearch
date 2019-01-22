@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/data/elasticsearch
+       http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--<context:property-placeholder location="classpath*:**/properties/*.properties" />-->
+    <aop:aspectj-autoproxy />
+    <!-- 扫描dao包  自动创建实现 -->
+    <elasticsearch:repositories base-package="com.snm" />
+
+    <!-- 扫描service包 -->
+    <context:component-scan base-package="com.snm.service" />
+
+    <!-- 配置elasticsearch连接 -->
+    <!--<elasticsearch:transport-client id="es.transport.client"
+                                    cluster-nodes="${elasticsearch.clusterName}"
+                                    cluster-name="${elasticsearch.clusterNodes}"/>-->
+    <elasticsearch:transport-client id="es.transport.client"
+                                    cluster-nodes="192.168.2.232:9300"
+                                    cluster-name="es_cluster"/>
+
+    <!-- spring data elasticsearch DAO必须依赖elasticsearchTemplate -->
+    <bean id="elasticsearchTemplate" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
+        <constructor-arg ref="es.transport.client" />
+    </bean>
+</beans>
